@@ -6,6 +6,10 @@ import (
 	"github.com/gocolly/colly"
 )
 
+type Data struct {
+	Body string
+}
+
 // main() contains code adapted from example found in Colly's docs:
 // http://go-colly.org/docs/examples/basic/
 func main() {
