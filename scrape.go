@@ -2,11 +2,21 @@ package main
 
 import (
 	"fmt"
+	// "io/ioutil"
+	// "strings"
+	
+	
+	"github.com/jinzhu/gorm"
+
 
 	"github.com/gocolly/colly"
 )
 
-type Data struct {
+// Stores the db value globally so it can be called
+var dB *gorm.DB
+
+type article struct {
+	gorm.Model
 	Body string
 }
 
@@ -14,21 +24,23 @@ type Data struct {
 // http://go-colly.org/docs/examples/basic/
 func main() {
 	// Instantiate default collector
-	c := colly.NewCollector()
-
+	c := colly.NewCollector(
+		// Restrict crawling to specific domains
+		// colly.AllowedDomains("reddit.com"),
+	)
 	// On every a element which has href attribute call callback
-	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
-                link := e.Attr("href")
-
-		// Print link
-                fmt.Printf("Link found: %q -> %s\n", e.Text, link)
+	c.OnHTML("tbody > tr > td > table > tbody", func(e *colly.HTMLElement) {
+                fmt.Println("We did it!")
+				e.ForEach("tr", func(_ int, h *colly.HTMLElement) {
+					title := h.ChildText("td.title > a") 
+					fmt.Println(title)
+				})
 	})
-
 	// Before making a request print "Visiting ..."
 	c.OnRequest(func(r *colly.Request) {
 		fmt.Println("Visiting", r.URL.String())
 	})
 
 	// Start scraping on https://hackerspaces.org
-	c.Visit("https://hackerspaces.org/")
+	c.Visit("https://news.ycombinator.com/")
 }
