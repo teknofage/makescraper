@@ -25,6 +25,10 @@ func main() {
 	var articles []article
 	var pageCount int
 	i := 0
+	title := ""
+	URL := ""
+	score := ""
+	poster := ""
 	// Instantiate default collector
 	c := colly.NewCollector()
 	cssSelector := "tbody > tr:nth-child(3) > td > table > tbody"
@@ -66,28 +70,31 @@ func main() {
 	c.Visit("https://news.ycombinator.com/")
 	fmt.Println(articles[0])
 
-	articleMap := &article{
-		Title,
-		URL, 	
-		Score,
-		Poster
+	articleMap := article{
+		Title: title,
+		URL: URL, 	
+		Score: score,
+		Poster: poster,
 	}
 	
 	// article := map[string]string{Title:"title", URL:"URL", Score:"score", Poster:"poster"}
 	articleJSON, _ := json.Marshal(articleMap)
 	fmt.Println(string(articleJSON))
+	articleJSONString := string(articleJSON)
+	fmt.Println(articleJSONString)
+	writeJSONToFile(articleJSONString)
 }
 
 
 
-func writeJSONToFile(articleJSON string) error {
+func writeJSONToFile(articleJSONString string) error {
     file, err := os.Create("output.json")
     if err != nil {
         return err
     }
     defer file.Close()
 
-    _, err = io.WriteString(file, data)
+    _, err = io.WriteString(file, articleJSONString)
     if err != nil {
         return err
     }
