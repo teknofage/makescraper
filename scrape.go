@@ -12,10 +12,10 @@ import (
 
 
 type article struct {
-	Title string
-	URL string
-	Score string
-	Poster string
+	Title 	string	`json:"title"`
+	URL 	string	`json:"URL"`
+	Score 	string 	`json:"score"`
+	Poster 	string	`json:"poster"`
 }
 
 // main() contains code adapted from example found in Colly's docs:
@@ -25,19 +25,17 @@ func main() {
 	var pageCount int
 	i := 0
 	// Instantiate default collector
-	c := colly.NewCollector(
-		// Restrict crawling to specific domains
-		// colly.AllowedDomains("reddit.com"),
-	)
-	// On every a element which has href attribute call callback
-	c.OnHTML("tbody > tr:nth-child(3) > td > table > tbody", func(e *colly.HTMLElement) {
+	c := colly.NewCollector()
+	cssSelector := "tbody > tr:nth-child(3) > td > table > tbody"
+
+	c.OnHTML(cssSelector, func(e *colly.HTMLElement) {
                 fmt.Println("We did it!")
 				e.ForEach("tr", func(_ int, h *colly.HTMLElement) {
 					var art article
 					title := h.ChildText("td.title > a") 
 					score := h.ChildText("td.subtext > span.score")
 					if title == "More" {
-						c.Visit("news.ycombinator.com" + h.ChildAttr("td.title > a", "href"))
+						c.Visit("news.ycombinator.com/" + h.ChildAttr("td.title > a", "href"))
 					} else if score != "" {
 						articles[i].Score = score
 						articles[i].Poster = h.ChildText("td.subtext > a.hnuser")
