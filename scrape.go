@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"encoding/json"
 	// "io/ioutil"
 	"os"
 	"io"
@@ -27,6 +28,10 @@ func main() {
 	// Instantiate default collector
 	c := colly.NewCollector()
 	cssSelector := "tbody > tr:nth-child(3) > td > table > tbody"
+	
+	// articleMap := map[string]string{Title:"title", URL:"URL", Score:"score", Poster:"poster"}
+	// articleJSON, _ := json.Marshal(articleMap)
+	// fmt.Println(string(articleJSON))
 
 	c.OnHTML(cssSelector, func(e *colly.HTMLElement) {
                 fmt.Println("We did it!")
@@ -61,7 +66,12 @@ func main() {
 	c.Visit("https://news.ycombinator.com/")
 	fmt.Println(articles[0])
 
+	articleMap := map[string]string{Title:"title", URL:"URL", Score:"score", Poster:"poster"}
+	articleJSON, _ := json.Marshal(articleMap)
+	fmt.Println(string(articleJSON))
 }
+
+
 
 func WriteToFile(data string) error {
     file, err := os.Create("output.json")
