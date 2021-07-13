@@ -66,14 +66,21 @@ func main() {
 	c.Visit("https://news.ycombinator.com/")
 	fmt.Println(articles[0])
 
-	articleMap := map[string]string{Title:"title", URL:"URL", Score:"score", Poster:"poster"}
+	articleMap := &article{
+		Title,
+		URL, 	
+		Score,
+		Poster
+	}
+	
+	// article := map[string]string{Title:"title", URL:"URL", Score:"score", Poster:"poster"}
 	articleJSON, _ := json.Marshal(articleMap)
 	fmt.Println(string(articleJSON))
 }
 
 
 
-func WriteToFile(data string) error {
+func writeJSONToFile(articleJSON string) error {
     file, err := os.Create("output.json")
     if err != nil {
         return err
