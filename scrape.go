@@ -13,14 +13,13 @@ import (
 
 
 type article struct {
-	Title 	string	`json:"title"`
-	URL 	string	`json:"URL"`
-	Score 	string 	`json:"score"`
-	Poster 	string	`json:"poster"`
+	Title 		string	`json:"title"`
+	URL 		string	`json:"URL"`
+	Score 		string 	`json:"score"`
+	Comments 	string 	`json:"score"`
+	Poster 		string	`json:"poster"`
 }
 
-// main() contains code adapted from example found in Colly's docs:
-// http://go-colly.org/docs/examples/basic/
 func main() {
 	var articles []article
 	var pageCount int
@@ -30,9 +29,7 @@ func main() {
 	c := colly.NewCollector()
 	cssSelector := "tbody > tr:nth-child(3) > td > table > tbody"
 	
-	// articleMap := map[string]string{Title:"title", URL:"URL", Score:"score", Poster:"poster"}
-	// articleJSON, _ := json.Marshal(articleMap)
-	// fmt.Println(string(articleJSON))
+
 
 	c.OnHTML(cssSelector, func(e *colly.HTMLElement) {
 				e.ForEach("tr", func(_ int, h *colly.HTMLElement) {
@@ -43,10 +40,11 @@ func main() {
 						c.Visit("news.ycombinator.com/" + h.ChildAttr("td.title > a", "href"))
 					} else if score != "" {
 						articles[i].Score = score
+						articles[i].Comments = h.ChildText("td.subtext > a:last-child")
 						articles[i].Poster = h.ChildText("td.subtext > a.hnuser")
 						i++
 					} else if title != "" {
-						// fmt.Println(title)
+						
 						art.Title = title
 						art.URL = h.ChildAttr("td.title > a", "href")
 						articles = append(articles, art)
