@@ -25,10 +25,7 @@ func main() {
 	var articles []article
 	var pageCount int
 	i := 0
-	title := ""
-	URL := ""
-	score := ""
-	poster := ""
+	
 	// Instantiate default collector
 	c := colly.NewCollector()
 	cssSelector := "tbody > tr:nth-child(3) > td > table > tbody"
@@ -38,7 +35,6 @@ func main() {
 	// fmt.Println(string(articleJSON))
 
 	c.OnHTML(cssSelector, func(e *colly.HTMLElement) {
-                fmt.Println("We did it!")
 				e.ForEach("tr", func(_ int, h *colly.HTMLElement) {
 					var art article
 					title := h.ChildText("td.title > a") 
@@ -69,19 +65,13 @@ func main() {
 	// Start scraping on https://hackerspaces.org
 	c.Visit("https://news.ycombinator.com/")
 	fmt.Println(articles[0])
+	fmt.Println("We did it!")
 
-	articleMap := article{
-		Title: title,
-		URL: URL, 	
-		Score: score,
-		Poster: poster,
-	}
-	
-	// article := map[string]string{Title:"title", URL:"URL", Score:"score", Poster:"poster"}
-	articleJSON, _ := json.Marshal(articleMap)
-	fmt.Println(string(articleJSON))
+	// Marshal instances of articles and conert to JSON
+	articleJSON, _ := json.Marshal(articles)
+	// fmt.Println(string(articleJSON))
 	articleJSONString := string(articleJSON)
-	fmt.Println(articleJSONString)
+	// fmt.Println(articleJSONString)
 	writeJSONToFile(articleJSONString)
 }
 
